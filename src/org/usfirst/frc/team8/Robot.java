@@ -21,6 +21,14 @@ public class Robot extends IterativeRobot {
 	Intake intake = new Intake(shooterStick.getShooterStick());
 	Shooter shooter = new Shooter(shooterStick.getShooterStick());
 	
+	public enum autoStates {
+		DRIVING_FORWARDS,
+		DRIVING_BACKWARDS,
+		INTAKING,
+	}
+	
+	private autoStates state = autoStates.DRIVING_FORWARDS;
+	
 	 @Override
     public void robotInit() {
 		 
@@ -28,11 +36,20 @@ public class Robot extends IterativeRobot {
 	 
     @Override
     public void autonomousInit() {
-    	
+    	state = autoStates.DRIVING_FORWARDS;
     }
     
     @Override
     public void autonomousPeriodic() {
+    	switch (state) {
+    	case DRIVING_FORWARDS:
+    		
+    		break;
+    	case DRIVING_BACKWARDS:
+    		break;
+    	case INTAKING:
+    		break;
+    	}
     }
     
     @Override

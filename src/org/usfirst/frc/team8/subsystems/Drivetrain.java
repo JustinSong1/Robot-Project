@@ -11,6 +11,8 @@ public class Drivetrain extends Subsystem{
 	private CANTalon backRight;
 	private Joystick forward;
 	private Joystick turn;
+	private double speed;
+	private double time;
 	
 	public enum DriveState {
 		ENCODER_DRIVE,
@@ -52,7 +54,14 @@ public class Drivetrain extends Subsystem{
         	
         	break;
         case TIMER_DRIVE:
-        	
+        	if(System.currentTimeMillis() > time) {
+        		state = DriveState.DISABLED;
+        		break;
+        	}
+        	frontLeft.set(speed);
+    		backLeft.set(speed);
+    		frontRight.set(speed);
+    		frontRight.set(speed);
         	break;
         case TELEOP:
         	double leftSpeed = Math.min(Math.max(-1.0,forward.getY() + turn.getX() ), 1.0);
@@ -77,4 +86,19 @@ public class Drivetrain extends Subsystem{
 		
 	}
 	
+	public void setDriveTIme() {
+		
+	}
+	
+	public void setSetpoint() {
+		
+	}
+	
+	public void driveTime(double speed, double time) {
+		speed = this.speed;
+		time = (this.time * 1000) + System.currentTimeMillis();
+		state = DriveState.TIMER_DRIVE;
+		
+		
+	}
 }

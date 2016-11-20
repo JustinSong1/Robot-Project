@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class Joysticks {
 	private Joystick driveStick;
 	private Joystick turnStick;
+	private Joystick shooterStick;
 	public Joysticks() {
 		Joystick driveStick = new Joystick(0);
 		Joystick turnStick = new Joystick(1);
@@ -20,6 +21,6 @@ public class Joysticks {
 	}
 	
 	public Joystick getShooterStick() {
-		return shooterStick();
+		return shooterStick;
 	}
 }
