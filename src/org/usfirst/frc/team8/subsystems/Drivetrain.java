@@ -1,6 +1,7 @@
 package org.usfirst.frc.team8.subsystems;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class Drivetrain extends Subsystem{
@@ -13,6 +14,8 @@ public class Drivetrain extends Subsystem{
 	private Joystick turn;
 	private double speed;
 	private double time;
+	private Encoder leftEncoder = new Encoder(2, 3);
+	private Encoder rightEncoder = new Encoder(0, 1);
 	
 	public enum DriveState {
 		ENCODER_DRIVE,
@@ -32,19 +35,13 @@ public class Drivetrain extends Subsystem{
 		backRight.setInverted(true);
 	}
 	
-	
 	@Override
 	public void init() {
-		
+		rightEncoder.setDistancePerPulse(1);
+		leftEncoder.setDistancePerPulse(1);
 	}
 	
-	public void setState(DriveState stateSet) {
-		state = stateSet;
-	}
-
-	public DriveState getState() {
-		return state;
-	}
+	
 	
 	@Override
 	public void update() {
@@ -90,6 +87,13 @@ public class Drivetrain extends Subsystem{
 		
 	}
 	
+	public void setDriveSpeed(double leftSpeed, double rightSpeed) {
+		frontLeft.set(leftSpeed);
+        backLeft.set(leftSpeed);
+        frontRight.set(rightSpeed);
+        backRight.set(rightSpeed);
+	}
+	
 	public void setSetpoint() {
 		
 	}
@@ -101,4 +105,21 @@ public class Drivetrain extends Subsystem{
 		
 		
 	}
+	
+	public void setState(DriveState stateSet) {
+		state = stateSet;
+	}
+
+	public DriveState getState() {
+		return state;
+	}
+	
+	public Encoder getLeftEncoder() {
+		return leftEncoder;
+	}
+	
+	public Encoder getRightEncoder() {
+		return rightEncoder;
+	}
+	
 }

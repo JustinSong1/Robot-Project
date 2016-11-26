@@ -1,6 +1,8 @@
 
 package org.usfirst.frc.team8;
 
+import org.usfirst.frc.team8.controllers.Controller;
+import org.usfirst.frc.team8.controllers.DriveStraightController;
 import org.usfirst.frc.team8.input.Joysticks;
 import org.usfirst.frc.team8.subsystems.Drivetrain;
 import org.usfirst.frc.team8.subsystems.Drivetrain.DriveState;
@@ -20,15 +22,16 @@ public class Robot extends IterativeRobot {
 	Drivetrain drivetrain = new Drivetrain(joysticks.getDriveStick(), joysticks.getTurnStick());
 	Intake intake = new Intake(shooterStick.getShooterStick());
 	Shooter shooter = new Shooter(shooterStick.getShooterStick());
+	Controller driveTrainController;
 	
 	public enum autoStates {
 		DRIVING_FORWARDS,
 		DRIVING_BACKWARDS,
-		INTAKING,
+		EXPELLING
 	}
 	
 	private autoStates state = autoStates.DRIVING_FORWARDS;
-	
+
 	 @Override
     public void robotInit() {
 		 
@@ -41,14 +44,38 @@ public class Robot extends IterativeRobot {
     
     @Override
     public void autonomousPeriodic() {
+    	int numberOfTimesRun = 0;
     	switch (state) {
     	case DRIVING_FORWARDS:
-    		
+    		if(numberOfTimesRun == 0) {
+    			driveTrainController = new DriveStraightController(100, .5, 5, drivetrain);
+    			driveTrainController.init();
+    			numberOfTimesRun++;
+    		} 
+    		if(!driveTrainController.checkForFinished()) {
+    			driveTrainController.update();
+    		} else {
+    			driveTrainController.finished();
+    			numberOfTimesRun = 0;
+    			state = autoStates.EXPELLING;
+    		}
     		break;
-    	case DRIVING_BACKWARDS:
+        	case EXPELLING:
     		break;
-    	case INTAKING:
-    		break;
+        	case DRIVING_BACKWARDS:
+        		if(numberOfTimesRun == 0) {
+        			driveTrainController = new DriveStraightController(100, -.5, 5, drivetrain);
+        			driveTrainController.init();
+        			numberOfTimesRun++;
+        		} 
+        		if(!driveTrainController.checkForFinished()) {
+        			driveTrainController.update();
+        		} else {
+        			driveTrainController.finished();
+        			numberOfTimesRun = 0;
+        			state = autoStates.EXPELLING;
+        		}
+        		break;
     	}
     }
     
