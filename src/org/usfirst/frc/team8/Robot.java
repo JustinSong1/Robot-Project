@@ -18,10 +18,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 	Joysticks joysticks = new Joysticks();
-	Joysticks shooterStick = new Joysticks();
 	Drivetrain drivetrain = new Drivetrain(joysticks.getDriveStick(), joysticks.getTurnStick());
-	Intake intake = new Intake(shooterStick.getShooterStick());
-	Shooter shooter = new Shooter(shooterStick.getShooterStick());
+	Intake intake = new Intake(joysticks.getShooterStick());
+	Shooter shooter = new Shooter(joysticks.getShooterStick());
 	Controller driveTrainController;
 	
 	public enum autoStates {

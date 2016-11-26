@@ -12,8 +12,8 @@ public class Drivetrain extends Subsystem{
 	private CANTalon backRight;
 	private Joystick forward;
 	private Joystick turn;
-	private double speed;
-	private double time;
+	private double speed=1;
+	private double time=0;
 	private Encoder leftEncoder = new Encoder(2, 3);
 	private Encoder rightEncoder = new Encoder(0, 1);
 	
@@ -27,12 +27,14 @@ public class Drivetrain extends Subsystem{
 	private DriveState state = DriveState.DISABLED;
 	
 	public Drivetrain(Joystick forward, Joystick turn) {
-		CANTalon frontLeft = new CANTalon(2);
-		CANTalon backLeft = new CANTalon(3);
-		CANTalon frontRight = new CANTalon(4);
-		CANTalon backRight = new CANTalon(1);
+		frontLeft = new CANTalon(2);
+		backLeft = new CANTalon(3);
+		frontRight = new CANTalon(4);
+		backRight = new CANTalon(1);
 		frontRight.setInverted(true);
 		backRight.setInverted(true);
+		this.forward = forward;
+		this.turn = turn;
 	}
 	
 	@Override
@@ -45,7 +47,6 @@ public class Drivetrain extends Subsystem{
 	
 	@Override
 	public void update() {
-		
         switch (state) {
         case ENCODER_DRIVE:
         	
@@ -61,12 +62,14 @@ public class Drivetrain extends Subsystem{
     		frontRight.set(speed);
         	break;
         case TELEOP:
-        	double leftSpeed = Math.min(Math.max(-1.0,forward.getY() + turn.getX() ), 1.0);
-            double rightSpeed = Math.min(Math.max(-1.0, forward.getY() - turn.getX()), 1.0);
+        	double leftSpeed = Math.min(Math.max(-1.0,-forward.getY() + turn.getX() ), 1.0);
+            double rightSpeed = Math.min(Math.max(-1.0, -forward.getY() - turn.getX()), 1.0);
             frontLeft.set(leftSpeed);
             backLeft.set(leftSpeed);
             frontRight.set(rightSpeed);
             backRight.set(rightSpeed);
+            System.out.println("left speed: " + leftSpeed);
+            System.out.println("right speed: " + rightSpeed);
         	break;
         case DISABLED:
         	frontLeft.set(0);

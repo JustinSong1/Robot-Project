@@ -11,7 +11,7 @@ public class Intake extends Subsystem{
 	
 	public Intake(Joystick joystick){
 		this.joystick = joystick;
-		CANTalon intakeMotor = new CANTalon(7);
+		intakeMotor = new CANTalon(7);
 	}
 	
 	private IntakeState state = IntakeState.IDLE;

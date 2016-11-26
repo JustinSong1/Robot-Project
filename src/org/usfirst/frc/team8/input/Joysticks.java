@@ -7,9 +7,9 @@ public class Joysticks {
 	private Joystick turnStick;
 	private Joystick shooterStick;
 	public Joysticks() {
-		Joystick driveStick = new Joystick(0);
-		Joystick turnStick = new Joystick(1);
-		Joystick shooterStick = new Joystick(2);
+		driveStick = new Joystick(0);
+		turnStick = new Joystick(1);
+		shooterStick = new Joystick(2);
 	}
 	
 	public Joystick getDriveStick() {

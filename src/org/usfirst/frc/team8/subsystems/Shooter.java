@@ -10,7 +10,7 @@ public class Shooter extends Subsystem {
 	VictorSP shooterMotor;
 	public Shooter(Joystick joystick) {
 		this.joystick = joystick;
-		VictorSP shooterMotor = new VictorSP(0);
+		shooterMotor = new VictorSP(0);
 	}
 
 	private ShooterState state = ShooterState.IDLE;
