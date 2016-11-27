@@ -3,6 +3,7 @@ package org.usfirst.frc.team8.controllers;
 import org.usfirst.frc.team8.subsystems.Drivetrain;
 
 public class DriveStraightController extends Controller {
+	private Drivetrain drivetrain;
 	private double distance;
 	private double maxSpeed;
 	private double maxTime;
@@ -10,12 +11,9 @@ public class DriveStraightController extends Controller {
 	private double targetDistance;
 	private double kP = 1;
 	private double lastLeft;
-	private double lastRight;
 	private double kD = 9;
 	private double acceptableError = 2;
-	private Drivetrain drivetrain;
 	private double derivativeLeft;
-	private double derivativeRight;
 	
 	
 	public DriveStraightController(double distance, double maxSpeed, double maxTime, Drivetrain drivetrain) {
@@ -28,22 +26,17 @@ public class DriveStraightController extends Controller {
 	@Override
 	public void init() {
 		endTime = System.currentTimeMillis() + (maxTime * 1000);
-		targetDistance = drivetrain.getRightEncoder().getDistance() + distance;
-		lastRight = targetDistance - drivetrain.getRightEncoder().getDistance();
+		targetDistance = drivetrain.getLeftEncoder().getDistance() + distance;
 		lastLeft = targetDistance - drivetrain.getLeftEncoder().getDistance();
 		derivativeLeft = 0;
-		derivativeRight = 0;
 	}
 
 	@Override
 	public void update() {
-		double errorRight = targetDistance - drivetrain.getRightEncoder().getDistance();
-		derivativeRight = (errorRight - lastRight) * 50;
-		lastRight = errorRight;
 		double errorLeft = targetDistance - drivetrain.getLeftEncoder().getDistance();
 		derivativeLeft = (errorLeft - lastLeft) * 50;
 		lastLeft = errorLeft;
-		drivetrain.setDriveSpeed((kP * errorLeft) + (kD * derivativeLeft), ((kP * errorRight) + (kD * derivativeRight)));
+		drivetrain.setDriveSpeed((kP * errorLeft) + (kD * derivativeLeft), (kP * errorLeft) + (kD * derivativeLeft));
 	}
 
 	@Override
@@ -53,7 +46,7 @@ public class DriveStraightController extends Controller {
 
 	@Override
 	public boolean checkForFinished() {
-		if(Math.abs(targetDistance - drivetrain.getRightEncoder().getDistance()) < 2 && Math.abs(targetDistance - drivetrain.getLeftEncoder().getDistance()) < 2 && derivativeLeft == 0 && derivativeRight == 0){
+		if(Math.abs(targetDistance - drivetrain.getLeftEncoder().getDistance()) < 2 && derivativeLeft == 0){
 			return true;
 		}
 		if(System.currentTimeMillis() >= endTime) {
