@@ -14,7 +14,7 @@ public class Drivetrain extends Subsystem{
 	private Joystick turn;
 	private double speed=1;
 	private double time=0;
-	private Encoder leftEncoder = new Encoder(2, 3);
+	private Encoder leftEncoder = new Encoder(3, 2);
 	private Encoder rightEncoder = new Encoder(0, 1);
 	
 	public enum DriveState {
@@ -40,7 +40,7 @@ public class Drivetrain extends Subsystem{
 	@Override
 	public void init() {
 		rightEncoder.setDistancePerPulse(1);
-		leftEncoder.setDistancePerPulse(1);
+		leftEncoder.setDistancePerPulse(.07116171);
 	}
 	
 	
@@ -68,8 +68,8 @@ public class Drivetrain extends Subsystem{
             backLeft.set(leftSpeed);
             frontRight.set(rightSpeed);
             backRight.set(rightSpeed);
-            System.out.println("left speed: " + leftSpeed);
-            System.out.println("right speed: " + rightSpeed);
+            System.out.println("left encoder: " + leftEncoder.getDistance());
+            System.out.println("right encoder: " + rightEncoder.getDistance());
         	break;
         case DISABLED:
         	frontLeft.set(0);
