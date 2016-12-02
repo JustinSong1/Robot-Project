@@ -41,7 +41,7 @@ public class DriveStraightController extends Controller {
 
 	@Override
 	public void finished() {
-		drivetrain.setDriveSpeed(0, 0);
+		drivetrain.disable();
 	}
 
 	@Override

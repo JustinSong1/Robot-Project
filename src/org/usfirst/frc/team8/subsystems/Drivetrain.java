@@ -1,5 +1,10 @@
 package org.usfirst.frc.team8.subsystems;
 
+import org.usfirst.frc.team8.Robot.AutoStates;
+import org.usfirst.frc.team8.controllers.Controller;
+import org.usfirst.frc.team8.controllers.DriveStraightController;
+import org.usfirst.frc.team8.input.Joysticks;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -16,15 +21,20 @@ public class Drivetrain extends Subsystem{
 	private double time=0;
 	private Encoder leftEncoder = new Encoder(3, 2);
 	private Encoder rightEncoder = new Encoder(0, 1);
+	private double setpoint;
+	Controller driveTrainController;
+	Joysticks joysticks = new Joysticks();
+	private Drivetrain drivetrain = new Drivetrain(joysticks.getDriveStick(), joysticks.getTurnStick());
+
 	
 	public enum DriveState {
 		ENCODER_DRIVE,
 		TIMER_DRIVE,
 		TELEOP,
-		DISABLED		
+		IDLE		
 	}
 	
-	private DriveState state = DriveState.DISABLED;
+	private DriveState state = DriveState.IDLE;
 	
 	public Drivetrain(Joystick forward, Joystick turn) {
 		frontLeft = new CANTalon(2);
@@ -49,11 +59,17 @@ public class Drivetrain extends Subsystem{
 	public void update() {
         switch (state) {
         case ENCODER_DRIVE:
-        	
+        	while(leftEncoder.getDistance() < setpoint) {
+        		frontLeft.set(1);
+            	backLeft.set(1);
+            	frontRight.set(1);
+            	backRight.set(1);
+        	}
+        	state = DriveState.IDLE;
         	break;
         case TIMER_DRIVE:
         	if(System.currentTimeMillis() > time) {
-        		state = DriveState.DISABLED;
+        		state = DriveState.IDLE;
         		break;
         	}
         	frontLeft.set(speed);
@@ -71,7 +87,7 @@ public class Drivetrain extends Subsystem{
             System.out.println("left encoder: " + leftEncoder.getDistance());
             System.out.println("right encoder: " + rightEncoder.getDistance());
         	break;
-        case DISABLED:
+        case IDLE:
         	frontLeft.set(0);
         	backLeft.set(0);
         	frontRight.set(0);
@@ -83,11 +99,7 @@ public class Drivetrain extends Subsystem{
 
 	@Override
 	public void disable() {
-		
-	}
-	
-	public void setDriveTIme() {
-		
+		state = DriveState.IDLE;
 	}
 	
 	public void setDriveSpeed(double leftSpeed, double rightSpeed) {
@@ -97,16 +109,26 @@ public class Drivetrain extends Subsystem{
         backRight.set(rightSpeed);
 	}
 	
-	public void setSetpoint() {
-		
+	public void setSetpoint(double setpoint, double maxSpeed, double maxTime) {
+		int numberOfTimesRun = 0;
+		if(numberOfTimesRun == 0) {
+			driveTrainController = new DriveStraightController(setpoint, .5, 5, drivetrain);
+			driveTrainController.init();
+			numberOfTimesRun++;
+		} 
+		if(!driveTrainController.checkForFinished()) {
+			driveTrainController.update();
+		} else {
+			driveTrainController.finished();
+			numberOfTimesRun = 0;
+		}
 	}
 	
 	public void driveTime(double speed, double time) {
 		speed = this.speed;
 		time = (this.time * 1000) + System.currentTimeMillis();
 		state = DriveState.TIMER_DRIVE;
-		
-		
+	
 	}
 	
 	public void setState(DriveState stateSet) {

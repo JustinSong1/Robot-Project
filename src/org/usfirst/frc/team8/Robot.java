@@ -23,13 +23,13 @@ public class Robot extends IterativeRobot {
 	Shooter shooter = new Shooter(joysticks.getShooterStick());
 	Controller driveTrainController;
 	
-	public enum autoStates {
+	public enum AutoStates {
 		DRIVING_FORWARDS,
 		DRIVING_BACKWARDS,
 		EXPELLING
 	}
 	
-	private autoStates state = autoStates.DRIVING_FORWARDS;
+	public AutoStates autoState = AutoStates.DRIVING_FORWARDS;
 
 	 @Override
     public void robotInit() {
@@ -40,44 +40,30 @@ public class Robot extends IterativeRobot {
 	 
     @Override
     public void autonomousInit() {
-    	state = autoStates.DRIVING_FORWARDS;
+    	autoState = AutoStates.DRIVING_FORWARDS;
     }
     
     @Override
     public void autonomousPeriodic() {
-    	int numberOfTimesRun = 0;
-    	switch (state) {
+    	switch (autoState) {
     	case DRIVING_FORWARDS:
-    		if(numberOfTimesRun == 0) {
-    			driveTrainController = new DriveStraightController(100, .5, 5, drivetrain);
-    			driveTrainController.init();
-    			numberOfTimesRun++;
-    		} 
-    		if(!driveTrainController.checkForFinished()) {
-    			driveTrainController.update();
-    		} else {
-    			driveTrainController.finished();
-    			numberOfTimesRun = 0;
-    			state = autoStates.EXPELLING;
-    		}
+    			drivetrain.setSetpoint(100, .5, 5);
+    			if(driveTrainController.checkForFinished()) {
+    				autoState = AutoStates.EXPELLING;
+    			}
     		break;
         	case EXPELLING:
+        		shooter.setState(ShooterState.SHOOTING);
+        			intake.setState(IntakeState.SHOOTING);
     		break;
         	case DRIVING_BACKWARDS:
-        		if(numberOfTimesRun == 0) {
-        			driveTrainController = new DriveStraightController(100, -.5, 5, drivetrain);
-        			driveTrainController.init();
-        			numberOfTimesRun++;
-        		} 
-        		if(!driveTrainController.checkForFinished()) {
-        			driveTrainController.update();
-        		} else {
-        			driveTrainController.finished();
-        			numberOfTimesRun = 0;
-        			state = autoStates.EXPELLING;
-        		}
+        		drivetrain.setSetpoint(100, -.5, 5);
         		break;
     	}
+    }
+    
+    public void setAutoState(AutoStates state) {
+    	autoState = state;
     }
     
     @Override
@@ -99,7 +85,7 @@ public class Robot extends IterativeRobot {
     
     @Override
     public void disabledInit() {
-    	drivetrain.setState(DriveState.DISABLED);
+    	drivetrain.setState(DriveState.IDLE);
     	shooter.setState(ShooterState.IDLE);
     	intake.setState(IntakeState.IDLE);
     }
