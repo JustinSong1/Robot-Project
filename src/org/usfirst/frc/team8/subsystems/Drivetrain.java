@@ -21,7 +21,6 @@ public class Drivetrain extends Subsystem{
 	private double time=0;
 	private Encoder leftEncoder = new Encoder(3, 2);
 	private Encoder rightEncoder = new Encoder(0, 1);
-	private double setpoint;
 	Controller drivetrainController;
 	Joysticks joysticks = new Joysticks();
 	private Drivetrain drivetrain = new Drivetrain(joysticks.getDriveStick(), joysticks.getTurnStick());
@@ -84,8 +83,6 @@ public class Drivetrain extends Subsystem{
             backLeft.set(leftSpeed);
             frontRight.set(rightSpeed);
             backRight.set(rightSpeed);
-            System.out.println("left encoder: " + leftEncoder.getDistance());
-            System.out.println("right encoder: " + rightEncoder.getDistance());
         	break;
         case IDLE:
         	frontLeft.set(0);

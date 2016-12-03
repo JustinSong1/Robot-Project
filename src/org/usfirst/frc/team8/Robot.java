@@ -99,6 +99,12 @@ public class Robot extends IterativeRobot {
         drivetrain.update();
         shooter.update();
         intake.update();
+        
+        if(joysticks.getDriveStick().getRawButton(1)) {
+        	drivetrain.setState(DriveState.TELEOP);
+        } else if(joysticks.getDriveStick().getRawButton(4)) {
+        	drivetrain.setSetpoint(100, .5, 5);
+        }
     }
     
     @Override

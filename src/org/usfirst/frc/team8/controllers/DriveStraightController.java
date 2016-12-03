@@ -36,7 +36,8 @@ public class DriveStraightController extends Controller {
 		double errorLeft = targetDistance - drivetrain.getLeftEncoder().getDistance();
 		derivativeLeft = (errorLeft - lastLeft) * 50;
 		lastLeft = errorLeft;
-		drivetrain.setDriveSpeed((kP * errorLeft) + (kD * derivativeLeft), (kP * errorLeft) + (kD * derivativeLeft));
+		double speed = Math.max(Math.min((kP * errorLeft) + (kD * derivativeLeft), maxSpeed), -maxSpeed);
+		drivetrain.setDriveSpeed(speed, speed);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package org.usfirst.frc.team8.subsystems;
 import org.usfirst.frc.team8.subsystems.Drivetrain.DriveState;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class Intake extends Subsystem{
@@ -38,12 +39,14 @@ public class Intake extends Subsystem{
 	
 	@Override
 	public void update() {		
-		if(joystick.getRawButton(5)) {
-			setState(IntakeState.INTAKING);
-		} else if(joystick.getRawButton(6)) {
-			setState(IntakeState.SHOOTING);
-		} else {
-			setState(IntakeState.IDLE);
+		if(DriverStation.getInstance().isOperatorControl()) {
+			if(joystick.getRawButton(5)) {
+				setState(IntakeState.INTAKING);
+			} else if(joystick.getRawButton(6)) {
+				setState(IntakeState.SHOOTING);
+			} else {
+				setState(IntakeState.IDLE);
+			}
 		}
 		switch (state) {
 		case INTAKING:
