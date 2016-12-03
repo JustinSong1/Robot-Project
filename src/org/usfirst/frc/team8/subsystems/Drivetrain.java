@@ -22,7 +22,7 @@ public class Drivetrain extends Subsystem{
 	private Encoder leftEncoder = new Encoder(3, 2);
 	private Encoder rightEncoder = new Encoder(0, 1);
 	private double setpoint;
-	Controller driveTrainController;
+	Controller drivetrainController;
 	Joysticks joysticks = new Joysticks();
 	private Drivetrain drivetrain = new Drivetrain(joysticks.getDriveStick(), joysticks.getTurnStick());
 
@@ -59,13 +59,13 @@ public class Drivetrain extends Subsystem{
 	public void update() {
         switch (state) {
         case ENCODER_DRIVE:
-        	while(leftEncoder.getDistance() < setpoint) {
-        		frontLeft.set(1);
-            	backLeft.set(1);
-            	frontRight.set(1);
-            	backRight.set(1);
-        	}
-        	state = DriveState.IDLE;
+        	if(!drivetrainController.checkForFinished()) {
+        		drivetrainController.update();
+        	} else {
+        		drivetrainController.finished();
+        		drivetrainController = null;
+        		state = DriveState.IDLE;
+        	} 	
         	break;
         case TIMER_DRIVE:
         	if(System.currentTimeMillis() > time) {
@@ -110,18 +110,8 @@ public class Drivetrain extends Subsystem{
 	}
 	
 	public void setSetpoint(double setpoint, double maxSpeed, double maxTime) {
-		int numberOfTimesRun = 0;
-		if(numberOfTimesRun == 0) {
-			driveTrainController = new DriveStraightController(setpoint, .5, 5, drivetrain);
-			driveTrainController.init();
-			numberOfTimesRun++;
-		} 
-		if(!driveTrainController.checkForFinished()) {
-			driveTrainController.update();
-		} else {
-			driveTrainController.finished();
-			numberOfTimesRun = 0;
-		}
+		drivetrainController = new DriveStraightController(setpoint, maxSpeed, maxTime, drivetrain);
+		drivetrainController.init();
 	}
 	
 	public void driveTime(double speed, double time) {

@@ -2,6 +2,7 @@ package org.usfirst.frc.team8.subsystems;
 
 import org.usfirst.frc.team8.subsystems.Intake.IntakeState;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.VictorSP;
 
@@ -36,12 +37,14 @@ public class Shooter extends Subsystem {
 	
 	@Override
 	public void update() {
-		if(joystick.getRawButton(5)) {
-			setState(ShooterState.INTAKING);
-		} else if(joystick.getRawButton(6)) {
-			setState(ShooterState.SHOOTING);
-		} else {
-			setState(ShooterState.IDLE);
+		if(DriverStation.getInstance().isOperatorControl()) {
+			if(joystick.getRawButton(5)) {
+				setState(ShooterState.INTAKING);
+			} else if(joystick.getRawButton(6)) {
+				setState(ShooterState.SHOOTING);
+			} else {
+				setState(ShooterState.IDLE);
+			}
 		}
 		switch (state) {
 		case INTAKING:

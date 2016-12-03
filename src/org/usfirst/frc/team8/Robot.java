@@ -21,7 +21,10 @@ public class Robot extends IterativeRobot {
 	Drivetrain drivetrain = new Drivetrain(joysticks.getDriveStick(), joysticks.getTurnStick());
 	Intake intake = new Intake(joysticks.getShooterStick());
 	Shooter shooter = new Shooter(joysticks.getShooterStick());
-	Controller driveTrainController;
+	Controller drivetrainController;
+	int numberOfTimesRun = 0;
+	double startTime;
+	
 	
 	public enum AutoStates {
 		DRIVING_FORWARDS,
@@ -47,19 +50,39 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	switch (autoState) {
     	case DRIVING_FORWARDS:
-    			drivetrain.setSetpoint(100, .5, 5);
-    			if(driveTrainController.checkForFinished()) {
-    				autoState = AutoStates.EXPELLING;
-    			}
+    		if(numberOfTimesRun == 0) {
+        		drivetrain.setSetpoint(100, .5, 5);
+        		numberOfTimesRun++;
+    		} 
+    		if(drivetrainController.checkForFinished()) {	
+    			numberOfTimesRun = 0;
+    			startTime = System.currentTimeMillis();
+    			shooter.setState(ShooterState.SHOOTING);
+        		intake.setState(IntakeState.SHOOTING);
+        		autoState = AutoStates.EXPELLING;
+    		}		
     		break;
-        	case EXPELLING:
-        		shooter.setState(ShooterState.SHOOTING);
-        			intake.setState(IntakeState.SHOOTING);
-    		break;
-        	case DRIVING_BACKWARDS:
+        case EXPELLING:
+        	if((System.currentTimeMillis() - startTime) > 2000) {
+    			shooter.setState(ShooterState.IDLE);
+	    		intake.setState(IntakeState.IDLE);
+    			autoState = AutoStates.DRIVING_BACKWARDS;
+    		}
+	    	break;
+       	case DRIVING_BACKWARDS:
+       		if(numberOfTimesRun == 0) {
         		drivetrain.setSetpoint(100, -.5, 5);
-        		break;
+        		numberOfTimesRun++;
+    		} 
+    		if(drivetrainController.checkForFinished()) {
+    			numberOfTimesRun = 0;
+    			drivetrain.disable();
+    		}		
+    		break;
     	}
+    	drivetrain.update();
+    	shooter.update();
+        intake.update();
     }
     
     public void setAutoState(AutoStates state) {
