@@ -15,7 +15,15 @@ public class DriveStraightController extends Controller {
 	private double acceptableError = 2;
 	private double derivativeLeft;
 	
-	
+	/**
+	 * 
+	 * @param distance How far the robot should travel
+	 * @param maxSpeed The maximum speed the robot should go
+	 * @param maxTime The maximum time that this should take
+	 * @param drivetrain The drivetrain
+	 * 
+	 * Sets the instance variables equal to the params
+	 */
 	public DriveStraightController(double distance, double maxSpeed, double maxTime, Drivetrain drivetrain) {
 		this.distance = distance;
 		this.maxSpeed = maxSpeed;
@@ -23,6 +31,10 @@ public class DriveStraightController extends Controller {
 		this.drivetrain = drivetrain;
 	}
 	
+	/**
+	 * Sets the end time, target distance, lastErrorLeft, and
+	 * Sets the left derivative to 0.
+	 */
 	@Override
 	public void init() {
 		endTime = System.currentTimeMillis() + (maxTime * 1000);
@@ -31,6 +43,9 @@ public class DriveStraightController extends Controller {
 		derivativeLeft = 0;
 	}
 
+	/**
+	 * Calculates the speed of the drivetrain using PID.
+	 */
 	@Override
 	public void update() {
 		double errorLeft = targetDistance - drivetrain.getLeftEncoder().getDistance();
@@ -40,16 +55,24 @@ public class DriveStraightController extends Controller {
 		drivetrain.setDriveSpeed(speed, speed);
 	}
 
+	/**
+	 * Disables the drivetrain
+	 */
 	@Override
 	public void finished() {
 		drivetrain.disable();
 	}
 
+	/**
+	 * Checks if the drivetrainController is finished
+	 */
 	@Override
 	public boolean checkForFinished() {
+		//Checks if it has gone the given distance
 		if(Math.abs(targetDistance - drivetrain.getLeftEncoder().getDistance()) < 2 && derivativeLeft == 0){
 			return true;
 		}
+		//Checks if the maximum time has elapsed
 		if(System.currentTimeMillis() >= endTime) {
 			return true;
 		}

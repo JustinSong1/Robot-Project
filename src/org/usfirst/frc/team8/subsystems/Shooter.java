@@ -13,7 +13,8 @@ public class Shooter extends Subsystem {
 		this.joystick = joystick;
 		shooterMotor = new VictorSP(0);
 	}
-
+	//See Intake for documentation on methods that 
+	//perform the same tasks.
 	private ShooterState state = ShooterState.IDLE;
 	
 	public enum ShooterState {	

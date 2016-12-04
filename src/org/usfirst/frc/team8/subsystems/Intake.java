@@ -23,22 +23,36 @@ public class Intake extends Subsystem{
 		IDLE	
 	}
 	
+	/**
+	 * 
+	 * @param stateSet The desired state
+	 * 
+	 * Sets the current state to the desired state
+	 */
 	public void setState(IntakeState stateSet) {
 		state = stateSet;
 	}
 
+	/**
+	 * 
+	 * @return The current State
+	 */
 	public IntakeState getState() {
 		return state;
 	}
 	
-	@Override
-	public void init() {
-		
-		
-	}
 	
 	@Override
-	public void update() {		
+	public void init() {
+	}
+	
+	/**
+	 * Based of what button is pressed, the intake does the same
+	 * things as the shooter.
+	 */
+	@Override
+	public void update() {	
+		//Checks if it is in teleop
 		if(DriverStation.getInstance().isOperatorControl()) {
 			if(joystick.getRawButton(5)) {
 				setState(IntakeState.INTAKING);
