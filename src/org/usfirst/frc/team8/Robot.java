@@ -34,7 +34,9 @@ public class Robot extends IterativeRobot {
 
 	 @Override
     public void robotInit() {
-		 
+		 drivetrain.init();
+		 intake.init();
+		 shooter.init();
     }
 	 
     @Override
