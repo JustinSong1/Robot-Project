@@ -100,9 +100,7 @@ public class Robot extends IterativeRobot {
         shooter.update();
         intake.update();
         
-        if(joysticks.getDriveStick().getRawButton(1)) {
-        	drivetrain.setState(DriveState.TELEOP);
-        } else if(joysticks.getDriveStick().getRawButton(4)) {
+        if(joysticks.getDriveStick().getRawButton(4)) {
         	drivetrain.setSetpoint(100, .5, 5);
         }
     }
