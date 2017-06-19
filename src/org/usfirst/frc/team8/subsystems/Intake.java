@@ -2,7 +2,8 @@ package org.usfirst.frc.team8.subsystems;
 
 import org.usfirst.frc.team8.subsystems.Drivetrain.DriveState;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.Joystick;
 
 public class Intake extends Subsystem{

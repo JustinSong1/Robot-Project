@@ -28,19 +28,19 @@ public class DriveStraightController extends Controller {
 	@Override
 	public void init() {
 		endTime = System.currentTimeMillis() + (maxTime * 1000);
-		targetDistance = drivetrain.getRightEncoder().getDistance() + distance;
-		lastRight = targetDistance - drivetrain.getRightEncoder().getDistance();
-		lastLeft = targetDistance - drivetrain.getLeftEncoder().getDistance();
+		targetDistance = drivetrain.getRightMasterTalon().getEncPosition() + distance;
+		lastRight = targetDistance -  drivetrain.getRightMasterTalon().getEncPosition();
+		lastLeft = targetDistance -  drivetrain.getRightMasterTalon().getEncPosition();
 		derivativeLeft = 0;
 		derivativeRight = 0;
 	}
 
 	@Override
 	public void update() {
-		double errorRight = targetDistance - drivetrain.getRightEncoder().getDistance();
+		double errorRight = targetDistance -  drivetrain.getRightMasterTalon().getEncPosition();
 		derivativeRight = (errorRight - lastRight) * 50;
 		lastRight = errorRight;
-		double errorLeft = targetDistance - drivetrain.getLeftEncoder().getDistance();
+		double errorLeft = targetDistance -  drivetrain.getRightMasterTalon().getEncPosition();
 		derivativeLeft = (errorLeft - lastLeft) * 50;
 		lastLeft = errorLeft;
 		drivetrain.setDriveSpeed((kP * errorLeft) + (kD * derivativeLeft), ((kP * errorRight) + (kD * derivativeRight)));
@@ -53,7 +53,7 @@ public class DriveStraightController extends Controller {
 
 	@Override
 	public boolean checkForFinished() {
-		if(Math.abs(targetDistance - drivetrain.getRightEncoder().getDistance()) < 2 && Math.abs(targetDistance - drivetrain.getLeftEncoder().getDistance()) < 2 && derivativeLeft == 0 && derivativeRight == 0){
+		if(Math.abs(targetDistance -  drivetrain.getRightMasterTalon().getEncPosition()) < 2 && Math.abs(targetDistance -  drivetrain.getLeftMasterTalon().getEncPosition()) < 2 && derivativeLeft == 0 && derivativeRight == 0){
 			return true;
 		}
 		if(System.currentTimeMillis() >= endTime) {
